@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1776738474595,
+    "nome": "Wanderley Ariel Santos da Silva",
+    "email": "wanderleyariel7@gmail.com",
+    "cpf": "54599825883",
+    "telefone": "11951681760",
+    "endereco": "Rua monte azul paulista",
+    "senha": "wanderley12310",
+    "data_registro": "20/04/2026, 23:27:54"
+  },
+  {
+    "id": 1776741805897,
+    "nome": "ariel silva",
+    "email": "ariel.jesuscura@gmail.com",
+    "cpf": "54599825888",
+    "telefone": "11951681717",
+    "endereco": "rua monteiro lobato",
+    "senha": "12310",
+    "metodo": "Formulário",
+    "data_registro": "21/04/2026, 00:23:25"
+  }
+]
