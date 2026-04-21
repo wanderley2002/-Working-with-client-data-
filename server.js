@@ -75,9 +75,10 @@ app.get('/usuarios', (req, res) => {
 });
 
 /**
- * 🚀 SERVIDOR
+ * 🚀 SERVIDOR (Ajustado para o Render)
  */
-const PORT = 3000;
+// O Render define a porta automaticamente, se não existir, usa a 3000
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`🚀 Servidor voando na porta ${PORT}`);
