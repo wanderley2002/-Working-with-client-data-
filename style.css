@@ -1,0 +1,52 @@
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.tela { display: none; }
+.ativa { display: block; }
+
+.box {
+    background: #1e293b;
+    padding: 20px;
+    width: 350px;
+    margin: auto;
+    border-radius: 10px;
+}
+
+input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+}
+
+button {
+    padding: 10px;
+    width: 320px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.instagram {
+    background: white;
+    color: black;
+}
+
+.instagram input {
+    border: 1px solid #ddd;
+}
+
+.instagram button {
+    background: #0095f6;
+    color: white;
+    border: none;
+}
+
+.link {
+    color: #888;
+    font-size: 12px;
+}
